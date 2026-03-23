@@ -16,7 +16,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="discover"
+        name="discover/index"
         options={{
           title: 'Discover',
           tabBarIcon: ({ color }) => (
@@ -29,7 +29,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="matches"
+        name="matches/index"
         options={{
           title: 'Matches',
           tabBarIcon: ({ color }) => (
@@ -42,7 +42,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => (

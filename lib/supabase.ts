@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
-import { Platform } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 
 import type { Database } from './types/database';
 
@@ -11,11 +11,16 @@ const isConfigured = supabaseUrl.startsWith('http') && supabaseAnonKey.length > 
 
 if (__DEV__ && !isConfigured) {
   console.warn(
-    '[Supabase] Missing env vars — copy .env.local.example to .env.local and restart the bundler with --clear.'
+    '[Supabase] Missing env vars — copy .env.local.example to .env.local and restart with --clear.'
   );
 }
 
-// Use SecureStore on native, localStorage on web
+// Suppress the intermediate unhandled-rejection noise that React Native's
+// tracker fires before our promise chain has a chance to handle the error.
+if (__DEV__) {
+  LogBox.ignoreLogs(['Network request failed']);
+}
+
 const ExpoSecureStoreAdapter = {
   getItem: (key: string) => {
     if (Platform.OS === 'web') return Promise.resolve(localStorage.getItem(key));
@@ -37,18 +42,29 @@ export const supabase = createClient<Database>(
   {
     auth: {
       storage: ExpoSecureStoreAdapter,
-      autoRefreshToken: isConfigured,
+      autoRefreshToken: isConfigured && !__DEV__,
       persistSession: isConfigured,
       detectSessionInUrl: false,
     },
     global: {
+      // Wrap fetch in a new Promise so the inner fetch promise is always
+      // considered "handled" before React Native's rejection tracker fires.
+      // whatwg-fetch rejects via setTimeout which races the tracker otherwise.
       fetch: (url, options) =>
-        Promise.race([
-          fetch(url, options),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('Supabase request timed out')), 10000)
-          ),
-        ]),
+        new Promise((resolve, reject) => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          fetch(url, { ...options, signal: controller.signal })
+            .then(resolve)
+            .catch(err => {
+              if (err.name === 'AbortError') {
+                reject(new Error('Supabase request timed out'));
+              } else {
+                reject(err);
+              }
+            })
+            .finally(() => clearTimeout(timeoutId));
+        }),
     },
   }
 );

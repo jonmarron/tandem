@@ -2,6 +2,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { useAuth } from '@/lib/auth';
 
+// useProfile hook is wired up here once the auth flow lands (issue #6).
+// React Query provider is active — queries will work once a session exists.
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
 

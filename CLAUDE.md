@@ -16,6 +16,30 @@ Read `ARCHITECTURE.md` for the full technical reference (schema, project structu
 - **Push:** Expo Notifications
 - **Testing:** Jest + React Native Testing Library
 
+## Git Branching Strategy
+
+- **`main`** — production-ready code only. Never commit directly. Merges only on release.
+- **`develop`** — integration branch. All feature branches are PR'd here.
+- **`feature/<issue-number>-<short-description>`** — one branch per issue.
+
+### Branch workflow for each issue
+
+```bash
+# Start from develop
+git checkout develop && git pull origin develop
+
+# Create feature branch
+git checkout -b feature/<number>-<short-description>
+
+# ... do the work, commit ...
+
+# Push and open PR targeting develop
+git push -u origin feature/<number>-<short-description>
+gh pr create --base develop --title "..." --body "..."
+```
+
+Never open PRs to `main`. Merges to `main` are done manually at release time.
+
 ## Task Management
 
 Tasks are tracked as GitHub Issues. Use the `gh` CLI to interact with them.
@@ -24,16 +48,19 @@ Tasks are tracked as GitHub Issues. Use the `gh` CLI to interact with them.
 
 1. Before starting work, check for the next open issue:
    ```bash
-   gh issue list --state open --label "phase:current" --sort created --json number,title,labels,body
+   gh issue list --state open --label "phase:current" --json number,title,labels,body
    ```
 
-2. When starting a task, assign yourself:
+2. When starting a task, create a feature branch and mark it in-progress:
    ```bash
+   git checkout develop && git pull origin develop
+   git checkout -b feature/<number>-<short-description>
    gh issue edit <number> --add-label "status:in-progress"
    ```
 
-3. When a task is complete, close it:
+3. When a task is complete, push and open a PR to `develop`:
    ```bash
+   gh pr create --base develop --title "<title>" --body "Closes #<number>"
    gh issue close <number> --comment "Completed: <brief summary of what was done>"
    ```
 

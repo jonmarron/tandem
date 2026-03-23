@@ -15,10 +15,18 @@ if (__DEV__ && !isConfigured) {
   );
 }
 
-// Suppress the intermediate unhandled-rejection noise that React Native's
-// tracker fires before our promise chain has a chance to handle the error.
 if (__DEV__) {
+  // LogBox suppresses the yellow overlay for network errors.
   LogBox.ignoreLogs(['Network request failed']);
+
+  // auth-js calls console.error() internally before rethrowing network errors,
+  // bypassing LogBox. Filter that specific error so it doesn't pollute the terminal.
+  const _consoleError = console.error.bind(console);
+  console.error = (...args: unknown[]) => {
+    const first = args[0];
+    if (first instanceof TypeError && first.message === 'Network request failed') return;
+    _consoleError(...args);
+  };
 }
 
 const ExpoSecureStoreAdapter = {

@@ -1,27 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function MatchesScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Matches</Text>
-      <Text style={styles.subtitle}>Your family connections</Text>
+    <View className="flex-1 items-center justify-center bg-background">
+      <View className="bg-surface rounded-2xl p-6 shadow-sm items-center">
+        <Text className="text-2xl font-bold text-text-primary">Matches</Text>
+        <Text className="text-base text-text-secondary mt-2">Your family connections</Text>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
-  },
-});

@@ -1,27 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function SignupScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create account</Text>
-      <Text style={styles.subtitle}>Join FamilyMatch</Text>
+    <View className="flex-1 items-center justify-center bg-background px-6">
+      <Text className="text-3xl font-bold text-text-primary mb-2">Create account</Text>
+      <Text className="text-base text-text-secondary">Join FamilyMatch</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
-  },
-});

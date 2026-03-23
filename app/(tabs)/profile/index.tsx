@@ -1,27 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function ProfileScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-      <Text style={styles.subtitle}>Your family profile</Text>
+    <View className="flex-1 items-center justify-center bg-background">
+      <View className="bg-surface rounded-2xl p-6 shadow-sm items-center">
+        <Text className="text-2xl font-bold text-text-primary">Profile</Text>
+        <Text className="text-base text-text-secondary mt-2">Your family profile</Text>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
-  },
-});
